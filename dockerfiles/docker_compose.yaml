@@ -1,0 +1,22 @@
+version: '3.0'
+
+services:
+  postgres:
+    container_name: crud_api
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: root
+      PGDATA: /data/postgres
+    volumes:
+       - $PWD/postgres:/data/crud_api
+    ports:
+      - "8600:5432"
+volumes:
+  postgres:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /C/Users/MohammadSiraj/Desktop/Projects/crud_api/database
