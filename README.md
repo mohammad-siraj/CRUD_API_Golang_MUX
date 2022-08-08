@@ -34,3 +34,4 @@ CRUD_API\dockerfiles\bash_files> bash dataupload.sh
 * lib/pq
 
 ## About The Project
+This is a CRUD API written in go lang on a car (params: model,make,year) database hosted in a Docker container running Postgres instance and using gorilla/mux for multiplexing HTTP requests 
