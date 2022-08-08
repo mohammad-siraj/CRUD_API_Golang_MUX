@@ -3,54 +3,62 @@ package operations
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/mohammad-siraj/crud_api/database"
 	"github.com/mohammad-siraj/crud_api/entities"
 )
 
+var db database.Database
+
+func Init() error {
+	var err error
+	db, err = database.NewDatabase()
+	return err
+}
+
 func Getcar(w http.ResponseWriter, req *http.Request) {
-	var c entities.Car
-	database.Getdata_db(&c, req)
-	//vars := mux.Vars(req)["model"]
+	id := mux.Vars(req)["id"]
+	carid, err := strconv.Atoi(id)
+	if err != nil {
+
+	}
+	c, err := db.Getdata_db(carid)
 	w.Header().Set("Content-Type", "application/json")
-	err := json.NewEncoder(w).Encode(c)
+	err = json.NewEncoder(w).Encode(c)
 	if err != nil {
 		fmt.Printf("%v", err)
 	}
-	//fmt.Printf("\n %s \n", vars)
 }
 
 func Createcar(w http.ResponseWriter, req *http.Request) {
-	var c entities.Car
-	c.Model = mux.Vars(req)["model"]
-	c.Make = mux.Vars(req)["make"]
-	c.Year = mux.Vars(req)["year"]
-	database.Postdata_db(&c, req)
+	car := entities.Car{Model: mux.Vars(req)["model"], Make: mux.Vars(req)["make"], Year: mux.Vars(req)["year"]}
+	err := db.Postdata_db(car)
 	w.Header().Set("Content-Type", "application/json")
-	err := json.NewEncoder(w).Encode(c)
+	err = json.NewEncoder(w).Encode(car)
 	if err != nil {
 		fmt.Printf("%v", err)
 	}
-	//fmt.Printf("\n %s \n", vars)
 }
 
 func Updatecar(w http.ResponseWriter, req *http.Request) {
-	var c entities.Car
-	c.Model = mux.Vars(req)["model"]
-	c.Make = mux.Vars(req)["make"]
-	c.Year = mux.Vars(req)["year"]
-	database.Updatedata_db(&c, req)
+	car := entities.Car{Model: mux.Vars(req)["model"], Make: mux.Vars(req)["make"], Year: mux.Vars(req)["year"]}
+	id, err := strconv.Atoi((mux.Vars(req)["id"]))
+	car, err = db.Updatedata_db(car, id)
 	w.Header().Set("Content-Type", "application/json")
-	err := json.NewEncoder(w).Encode(c)
+	err = json.NewEncoder(w).Encode(car)
 	if err != nil {
 		fmt.Printf("%v", err)
 	}
-	//fmt.Printf("\n %s \n", vars)
 }
 
 func Deletecar(w http.ResponseWriter, req *http.Request) {
-	var c entities.Car
-	database.Deletedata_db(&c, req)
+	id, err := strconv.Atoi((mux.Vars(req)["id"]))
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = db.Deletedata_db(id)
 }
